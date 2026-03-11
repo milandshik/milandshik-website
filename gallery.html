@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Rashika Kaushik — Paintings</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Fraunces:ital,wght@0,300;0,700;1,300;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black:    #0f0e0c;
+    --soft:     #5c564d;
+    --indigo:   #4f46e5;
+    --white:    #ffffff;
+    --red:      #e03b2a;
+    --yellow:   #f5c842;
+    --blue:     #2d5be3;
+    --orange:   #f07030;
+    --green:    #3a8c5c;
+    --pink:     #e8607a;
+    --muted:    #7a7060;
+    --offwhite: #fafaf8;
+    --light:    #f4f2ee;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* ── CURSOR ── */
+  #cursor {
+    position: fixed; z-index: 9999; pointer-events: none;
+    top: 0; left: 0; transform: translate(-50%,-50%);
+    width: 14px; height: 14px;
+    background: var(--red); border-radius: 50%;
+    transition: width .22s, height .22s, background .22s, border-radius .22s;
+    mix-blend-mode: multiply;
+  }
+  #cursor.big  { width: 65px; height: 65px; background: var(--yellow); }
+  #cursor.link { width: 38px; height: 38px; background: var(--blue); border-radius: 4px; }
+
+  /* ── FLOATING BLOBS (hero only) ── */
+  .blob-layer {
+    position: absolute; inset: 0; z-index: 0;
+    pointer-events: none; overflow: hidden;
+  }
+  .blob {
+    position: absolute; border-radius: 50%;
+    animation: blobDrift ease-in-out infinite;
+  }
+  @keyframes blobDrift {
+    0%,100% { transform: translate(0,0) scale(1); }
+    25%      { transform: translate(18px,-24px) scale(1.06); }
+    50%      { transform: translate(-12px,18px) scale(0.94); }
+    75%      { transform: translate(22px,12px) scale(1.03); }
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.4rem 3rem;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .nav-logo {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem; font-weight: 300; font-style: italic;
+    color: var(--soft); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; color: var(--muted);
+    font-size: 0.8rem; letter-spacing: 0.12em;
+    text-transform: uppercase; font-weight: 500;
+    position: relative; transition: color .3s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: -2px; left: 0;
+    width: 0; height: 2px; background: var(--red); transition: width .3s;
+  }
+  .nav-links a:hover { color: var(--soft); }
+  .nav-links a:hover::after { width: 100%; }
+
+  /* ═══════════════════════════════
+     HERO — bold, blobs, big type
+  ═══════════════════════════════ */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 9rem 3rem 5rem; gap: 3rem;
+    position: relative; overflow: hidden;
+    background: var(--white);
+  }
+  .hero-text { position: relative; z-index: 1; }
+  .hero-eyebrow {
+    font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1rem;
+    animation: fadeUp .8s .15s ease both;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(4.5rem, 12vw, 9rem);
+    font-weight: 700;
+    line-height: 0.92; color: var(--indigo);
+    letter-spacing: 0.04em;
+    animation: fadeUp .8s .3s ease both;
+  }
+  .hero-sub {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 1.25rem; color: var(--muted);
+    margin-top: 1.5rem; max-width: 400px; line-height: 1.65;
+    animation: fadeUp .8s .45s ease both;
+  }
+  .hero-btn {
+    display: inline-block; margin-top: 2.5rem;
+    padding: 0.9rem 2.2rem;
+    background: var(--offwhite);
+    color: var(--black);
+    font-size: 0.78rem; letter-spacing: 0.15em; text-transform: uppercase;
+    text-decoration: none; transition: background .3s, transform .2s, box-shadow .3s;
+    animation: fadeUp .8s .6s ease both;
+    box-shadow: 0 0 24px rgba(15,14,12,0.4), 0 0 48px rgba(15,14,12,0.25);
+    text-shadow: 0 0 16px rgba(15,14,12,0.6), 0 0 32px rgba(15,14,12,0.4), 0 0 48px rgba(15,14,12,0.3);
+  }
+  .hero-btn:hover {
+    background: var(--light);
+    transform: translateY(-2px);
+    box-shadow: 0 0 32px rgba(15,14,12,0.5), 0 0 60px rgba(15,14,12,0.35);
+    text-shadow: 0 0 20px rgba(15,14,12,0.7), 0 0 40px rgba(15,14,12,0.5), 0 0 56px rgba(15,14,12,0.35);
+  }
+
+  .hero-stack {
+    position: relative; height: 540px; z-index: 1;
+    animation: fadeUp .8s .5s ease both;
+  }
+  .hcard {
+    position: absolute;
+    border: 5px solid var(--white);
+    box-shadow: 0 14px 44px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+  .hcard img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .hc1 { width:250px;height:310px;top:0;   left:10px; transform:rotate(-5deg);   animation:floatA 7s ease-in-out infinite; }
+  .hc2 { width:210px;height:255px;top:50px;left:210px;transform:rotate(3.5deg);  animation:floatB 9s ease-in-out infinite; }
+  .hc3 { width:190px;height:230px;top:285px;left:50px;transform:rotate(-2deg);   animation:floatC 8s ease-in-out infinite; }
+  .hc4 { width:170px;height:200px;top:305px;left:265px;transform:rotate(5.5deg); animation:floatA 6s 1.2s ease-in-out infinite; }
+
+  @keyframes floatA { 0%,100%{transform:rotate(-5deg) translateY(0)}   50%{transform:rotate(-5deg) translateY(-14px)} }
+  @keyframes floatB { 0%,100%{transform:rotate(3.5deg) translateY(0)}  50%{transform:rotate(3.5deg) translateY(-18px)} }
+  @keyframes floatC { 0%,100%{transform:rotate(-2deg) translateY(0)}   50%{transform:rotate(-2deg) translateY(-11px)} }
+
+  .hero-scroll {
+    position: absolute; bottom: 2.5rem; right: 3rem;
+    writing-mode: vertical-rl; font-size: 0.68rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--muted);
+    display: flex; align-items: center; gap: 0.6rem;
+    animation: fadeIn 1s 1.2s ease both;
+  }
+  .hero-scroll::before {
+    content: ''; display: block; width: 1px; height: 55px; background: var(--muted);
+    animation: growLine 1s 1.8s ease both; transform-origin: top; transform: scaleY(0);
+  }
+  @keyframes growLine { to { transform: scaleY(1); } }
+
+  /* ═══════════════════════════════
+     MARQUEE
+  ═══════════════════════════════ */
+  .marquee-wrap {
+    overflow: hidden;
+    padding: 1.25rem 0;
+    background: linear-gradient(90deg, var(--light) 0%, var(--offwhite) 50%, var(--light) 100%);
+    border-top: 1px solid rgba(92,86,77,0.12);
+    border-bottom: 1px solid rgba(92,86,77,0.12);
+    box-shadow: 0 0 40px rgba(92,86,77,0.04);
+    position: relative;
+  }
+  .marquee-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+    pointer-events: none;
+  }
+  .marquee-track {
+    display: flex; gap: 2.5rem; white-space: nowrap;
+    animation: marquee 24s linear infinite;
+  }
+  .marquee-track span {
+    font-family: 'Bebas Neue', sans-serif; font-size: 1.35rem; letter-spacing: 0.18em;
+    color: var(--black);
+    text-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  }
+  .marquee-track .dot {
+    color: var(--muted);
+    font-size: 1rem;
+  }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* ═══════════════════════════════
+     MINIMALIST SECTIONS BELOW
+  ═══════════════════════════════ */
+
+  /* Shared minimal section styles */
+  .section-label {
+    font-size: 0.68rem; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--black); margin-bottom: 0.8rem;
+  }
+  .section-title {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem); line-height: 1.2; color: var(--soft);
+  }
+  .section-title em { font-style: italic; }
+
+  /* ── GALLERY ── */
+  .gallery { padding: 8rem 3rem; background: var(--offwhite); }
+
+  .gallery-top {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 3rem; padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .filter-tabs { display: flex; gap: 0.4rem; }
+  .ftab {
+    padding: .4rem 1rem; background: transparent;
+    border: 1px solid rgba(0,0,0,0.14);
+    font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); cursor: none; transition: all .25s;
+  }
+  .ftab:hover, .ftab.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+  /* Clean 3-col grid — no masonry, uniform */
+  .grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;
+    background: transparent;
+  }
+  .card {
+    position: relative; overflow: hidden; cursor: none;
+    background: var(--white); aspect-ratio: 3/4;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    transition: transform .3s ease, box-shadow .3s ease;
+  }
+  .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+  .card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease; }
+  .card:hover img { transform: scale(1.05); }
+  .card-overlay {
+    position: absolute; inset: 0;
+    background: rgba(15,14,12,0);
+    transition: background .4s;
+    display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 1.5rem;
+  }
+  .card:hover .card-overlay { background: rgba(15,14,12,0.65); }
+  .card-title {
+    font-family: 'Fraunces', serif; font-style: italic; font-size: 1.1rem;
+    color: white; opacity: 0; transform: translateY(8px);
+    transition: opacity .35s, transform .35s;
+  }
+  .card-meta {
+    font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(255,255,255,.6); opacity: 0; transform: translateY(8px);
+    transition: opacity .35s .05s, transform .35s .05s;
+  }
+  .card:hover .card-title, .card:hover .card-meta { opacity: 1; transform: translateY(0); }
+  .card.selected { outline: 3px solid var(--red); outline-offset: 4px; z-index: 1; }
+  .card img.rotated { transform: scale(1.05) rotate(90deg); }
+  .feat-img.rotated { transform: rotate(90deg); max-width: 85%; margin: 0 auto; display: block; }
+
+  /* ── FEATURED ── */
+  .featured {
+    padding: 8rem 3rem;
+    background: var(--white);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: center;
+  }
+  #featured-content { display: contents; }
+  .feat-img {
+    width: 100%; display: block;
+    box-shadow: 0 2px 40px rgba(0,0,0,0.10);
+  }
+  .feat-info { }
+  .feat-num {
+    font-family: 'Fraunces', serif; font-style: italic;
+    font-size: 5rem; color: rgba(0,0,0,0.05); line-height: 1;
+    margin-bottom: -1rem; display: block;
+  }
+  .feat-title {
+    font-family: 'Fraunces', serif; font-weight: 300; font-style: italic;
+    font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.2; margin-bottom: 1.5rem;
+    color: var(--soft);
+  }
+  .feat-divider {
+    width: 40px; height: 1px; background: var(--soft); margin-bottom: 1.5rem;
+  }
+  .feat-desc {
+    font-size: 0.95rem; color: var(--black); line-height: 1.85; margin-bottom: 2rem;
+  }
+  .feat-meta { display: flex; flex-direction: column; gap: 0.6rem; }
+  .feat-meta-row {
+    display: flex; align-items: baseline; gap: 1rem;
+    padding-bottom: 0.6rem; border-bottom: 1px solid rgba(0,0,0,0.06);
+    font-size: 0.8rem;
+  }
+  .feat-meta-row label { color: var(--black); min-width: 70px; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.68rem; }
+  .feat-meta-row span { color: var(--black); }
+
+  /* ── ABOUT (portrait painting) ── */
+  .about {
+    padding: 8rem 3rem;
+    background: var(--light);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: center;
+  }
+  .about-portrait {
+    position: relative;
+  }
+  .about-portrait img {
+    width: 100%; display: block;
+    box-shadow: 0 2px 40px rgba(0,0,0,0.10);
+  }
+  .about-portrait::after {
+    content: 'Vase of Flowers — Watercolour & Ink';
+    position: absolute; bottom: -1.5rem; left: 0;
+    font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted);
+  }
+  .about-text { }
+  .about-text p {
+    font-size: 0.95rem; color: var(--black); line-height: 1.9; margin-top: 1.2rem;
+  }
+  .about-text p + p { margin-top: 1rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 1.4rem 3rem;
+    background: var(--indigo);
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .footer-logo {
+    font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 300; font-style: italic;
+    letter-spacing: .06em; color: rgba(255,255,255,0.95);
+  }
+  .footer-logo span { color: rgba(255,255,255,0.9); }
+  footer p { font-size: .75rem; color: rgba(255,255,255,0.6); letter-spacing: .1em; }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp { from{opacity:0;transform:translateY(38px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1.1rem 1.5rem; }
+    .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 4rem; }
+    .hero-stack { display: none; }
+    .gallery, .featured, .about { padding: 5rem 1.5rem; grid-template-columns: 1fr; gap: 3rem; }
+    .gallery-top { flex-direction: column; align-items: flex-start; gap: 1.2rem; }
+    .grid { grid-template-columns: 1fr 1fr; }
+    footer { flex-direction: column; gap: 1rem; text-align: center; padding: 3rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Rashika</a>
+  <ul class="nav-links">
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#featured">Featured</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- ═══ HERO (bold, blobs, big) ═══ -->
+<section class="hero">
+  <div class="blob-layer">
+    <div class="blob" style="width:520px;height:520px;background:#f5c842;opacity:.13;top:-120px;right:-130px;animation-duration:19s;"></div>
+    <div class="blob" style="width:380px;height:380px;background:#e03b2a;opacity:.10;top:35%;left:-120px;animation-duration:15s;animation-delay:-5s;"></div>
+    <div class="blob" style="width:300px;height:300px;background:#2d5be3;opacity:.08;bottom:20%;right:5%;animation-duration:22s;animation-delay:-9s;"></div>
+    <div class="blob" style="width:240px;height:240px;background:#e8607a;opacity:.10;top:65%;left:35%;animation-duration:17s;animation-delay:-3s;"></div>
+    <div class="blob" style="width:160px;height:160px;background:#f07030;opacity:.11;top:20%;left:45%;animation-duration:11s;animation-delay:-2s;"></div>
+  </div>
+  <div class="hero-text">
+    <p class="hero-eyebrow">Painter · milandshik.com</p>
+    <h1 class="hero-title">Paint<br/>ings</h1>
+    <p class="hero-sub">Bold strokes, vivid worlds — watercolour paintings by Rashika Kaushik.</p>
+    <a href="#gallery" class="hero-btn">View the Gallery</a>
+  </div>
+  <div class="hero-stack">
+    <div class="hcard hc1"><img src="Vase of flowers.webp" alt="Vase of Flowers"/></div>
+    <div class="hcard hc2"><img src="Tea and orange.webp" alt="Tea and Orange"/></div>
+    <div class="hcard hc3"><img src="Cat and flower.webp" alt="Cat and Flower"/></div>
+    <div class="hcard hc4"><img src="Cat and croissant.webp" alt="Cat and Croissant"/></div>
+  </div>
+  <div class="hero-scroll">Scroll Down</div>
+</section>
+
+<!-- ═══ MARQUEE ═══ -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>Watercolour</span><span class="dot">✦</span><span>Bold Line</span><span class="dot">✦</span>
+    <span>Still Life</span><span class="dot">✦</span><span>Animals</span><span class="dot">✦</span>
+    <span>Botanicals</span><span class="dot">✦</span><span>Impressionist</span><span class="dot">✦</span>
+    <span>Original Works</span><span class="dot">✦</span><span>Rashika Kaushik</span><span class="dot">✦</span>
+    <span>Watercolour</span><span class="dot">✦</span><span>Bold Line</span><span class="dot">✦</span>
+    <span>Still Life</span><span class="dot">✦</span><span>Animals</span><span class="dot">✦</span>
+    <span>Botanicals</span><span class="dot">✦</span><span>Impressionist</span><span class="dot">✦</span>
+    <span>Original Works</span><span class="dot">✦</span><span>Rashika Kaushik</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- ═══ GALLERY (minimalist grid) ═══ -->
+<section class="gallery" id="gallery">
+  <div class="gallery-top reveal">
+    <div>
+      <p class="section-label">Collection</p>
+      <h2 class="section-title"><em>All Works</em></h2>
+    </div>
+    <div class="filter-tabs">
+      <button class="ftab active" onclick="filter('all',this)">All</button>
+      <button class="ftab" onclick="filter('still-life',this)">Still Life</button>
+      <button class="ftab" onclick="filter('animals',this)">Animals</button>
+      <button class="ftab" onclick="filter('botanicals',this)">Botanicals</button>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- ═══ FEATURED (shows clicked painting) ═══ -->
+<section class="featured" id="featured">
+  <div id="featured-content"></div>
+</section>
+
+<!-- ═══ ABOUT with portrait painting ═══ -->
+<section class="about" id="about">
+  <div class="about-portrait reveal">
+    <img src="Vase of flowers.webp" alt="Vase of Flowers by Rashika"/>
+  </div>
+  <div class="about-text reveal">
+    <p class="section-label">The Artist</p>
+    <h2 class="section-title"><em>Hi, I'm<br/>Rashika.</em></h2>
+    <p>I paint with bold lines and loose watercolour washes — finding beauty in everyday things like cats sniffing flowers, a cup of tea beside an orange, and the vivid geometry of sliced fruit.</p>
+    <p>Add your own story here to let visitors into your world and your practice.</p>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="footer-logo">Rashika<span>.</span></div>
+  <p>milandshik.com · All works © Rashika Kaushik</p>
+</footer>
+
+<script>
+  const cur = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cur.style.left = e.clientX + 'px';
+    cur.style.top  = e.clientY + 'px';
+  });
+  const big  = () => { cur.classList.add('big');  cur.classList.remove('link'); };
+  const link = () => { cur.classList.add('link'); cur.classList.remove('big');  };
+  const off  = () => cur.classList.remove('big','link');
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', link);
+    el.addEventListener('mouseleave', off);
+  });
+
+  const subjectLabel = { 'still-life': 'Still Life', 'animals': 'Animals', 'botanicals': 'Botanicals' };
+  const paintings = [
+    { src:'Vase of flowers.webp',   title:'Vase of Flowers', medium:'Watercolour & Ink', cat:'botanicals', desc:'A lush bouquet in a vessel, rendered with confident lines and flowing colour. Watercolour and ink capture both structure and delicacy.', rotated: false },
+    { src:'Rashika Kaushik.webp',   title:'Oranges',         medium:'Watercolour & Ink', cat:'still-life', desc:'Sliced and whole oranges arranged with geometric clarity. Bold line and fresh colour make the fruit feel vivid and tactile.', rotated: false },
+    { src:'Tea and orange.webp',    title:'Tea & Orange',    medium:'Watercolour & Ink', cat:'still-life', desc:'A quiet still life of a teacup and a bright orange. Bold outlines and soft washes celebrate the simplicity of a morning ritual.', rotated: false },
+    { src:'Fishes.webp',           title:'Fish',            medium:'Watercolour & Ink', cat:'still-life', desc:'A vibrant still life bursting with energy — fish, lemons and a terracotta jar set against a deep, moody background. Bold outlines give each element graphic intensity while the loose washes breathe life into every form.', rotated: false },
+    { src:'Cat and croissant.webp', title:'Cat & Croissant', medium:'Watercolour & Ink', cat:'animals', desc:'A cozy moment captured in bold line and wash — a cat curls beside a buttery croissant. The contrast between soft fur and flaky pastry brings warmth and humour to the scene.', rotated: false },
+    { src:'Cat and flower.webp',   title:'Cat & Flower',    medium:'Watercolour & Ink', cat:'animals', desc:'A curious cat meets a bold bloom. Loose watercolour and strong outlines turn an everyday moment into something graphic and tender.', rotated: false },
+    { src:'Bananas.png',            title:'Bananas',         medium:'Watercolour & Ink', cat:'still-life', desc:'A bunch of bananas in horizontal composition — strong shapes and warm yellows against a gentle ground. Watercolour and ink give weight and simplicity.', rotated: true },
+    { src:'Flowers.png',           title:'Flowers',         medium:'Watercolour & Ink', cat:'botanicals', desc:'A burst of blooms in bold outline and soft colour. The piece balances botanical detail with a loose, painterly hand.', rotated: false },
+    { src:'Lillies.png',           title:'Lillies',        medium:'Watercolour & Ink', cat:'botanicals', desc:'Elegant lilies rendered with flowing washes and decisive line. Watercolour and ink capture their curves and quiet drama.', rotated: false },
+    { src:'Snake Plant.png',        title:'Snake Plant',     medium:'Watercolour & Ink', cat:'botanicals', desc:'Architectural leaves in a pot — sharp angles and deep greens. Bold line and restrained colour put the focus on form and presence.', rotated: false },
+  ];
+
+  function buildCard(p, index) {
+    const d = document.createElement('div');
+    d.className = 'card'; d.dataset.cat = p.cat; d.dataset.paintingIndex = index;
+    const imgClass = p.rotated ? 'rotated' : '';
+    d.innerHTML = `
+      <img src="${p.src}" alt="${p.title}" loading="lazy" class="${imgClass}"/>
+      <div class="card-overlay">
+        <div class="card-title">${p.title}</div>
+        <div class="card-meta">${p.medium}</div>
+      </div>`;
+    d.addEventListener('mouseenter', big);
+    d.addEventListener('mouseleave', off);
+    d.addEventListener('click', () => showHighlight(index));
+    return d;
+  }
+
+  function updateFeatured(index) {
+    const p = paintings[index];
+    const subject = subjectLabel[p.cat] || p.cat;
+    const num = String(index + 1).padStart(2, '0');
+    const imgClass = p.rotated ? 'feat-img rotated' : 'feat-img';
+    const fc = document.getElementById('featured-content');
+    fc.innerHTML = `
+      <div class="reveal">
+        <img class="${imgClass}" src="${p.src}" alt="${p.title}"/>
+      </div>
+      <div class="feat-info reveal">
+        <span class="feat-num">${num}</span>
+        <h2 class="feat-title">${p.title}</h2>
+        <div class="feat-divider"></div>
+        <p class="feat-desc">${p.desc}</p>
+        <div class="feat-meta">
+          <div class="feat-meta-row"><label>Medium</label><span>${p.medium}</span></div>
+          <div class="feat-meta-row"><label>Style</label><span>Bold Line</span></div>
+          <div class="feat-meta-row"><label>Subject</label><span>${subject}</span></div>
+          <div class="feat-meta-row"><label>Artist</label><span>Rashika Kaushik</span></div>
+        </div>
+      </div>`;
+    document.querySelectorAll('#featured-content .reveal').forEach(el => obs.observe(el));
+  }
+
+  function showHighlight(index) {
+    updateFeatured(index);
+    document.querySelectorAll('.card.selected').forEach(c => c.classList.remove('selected'));
+    const card = document.querySelector(`.card[data-painting-index="${index}"]`);
+    if (card) card.classList.add('selected');
+    document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function render(f='all') {
+    const g = document.getElementById('grid');
+    g.innerHTML = '';
+    paintings.forEach((p, i) => {
+      if (f !== 'all' && p.cat !== f) return;
+      g.appendChild(buildCard(p, i));
+    });
+  }
+
+  function filter(cat, btn) {
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render(cat);
+  }
+
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  render();
+  updateFeatured(3); // default: Fish
+</script>
+</body>
+</html>
